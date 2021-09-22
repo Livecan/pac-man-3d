@@ -20,6 +20,13 @@ public class PlayerController : MonoBehaviour
         playerRigidbody = GetComponent<Rigidbody>();
     }
 
+    private void StartTurning(float degreesLeft, MovementState direction)
+    {
+        turnAngleLeft = degreesLeft;
+        playerMovementState = direction;
+        nextTurn = null;
+    }
+
     // Update is called once per frame
     void Update()
     {
@@ -36,16 +43,12 @@ public class PlayerController : MonoBehaviour
 
         if ((playerMovementState == MovementState.Forward || playerMovementState == MovementState.Stop) && nextTurn == MovementState.Back)
         {
-            turnAngleLeft = 180;
-            playerMovementState = MovementState.Left;
-            nextTurn = null;
+            StartTurning(180, MovementState.Left);
         }
 
         if (playerMovementState == MovementState.Stop && nextTurn != null)
         {
-            turnAngleLeft = 90;
-            playerMovementState = (MovementState)nextTurn;
-            nextTurn = null;
+            StartTurning(90, (MovementState)nextTurn);
         }
 
         if (playerMovementState == MovementState.Left || playerMovementState == MovementState.Right || playerMovementState == MovementState.Back)
@@ -63,9 +66,19 @@ public class PlayerController : MonoBehaviour
             }
         } else if (playerMovementState == MovementState.Forward)
         {
-            
-            
             transform.Translate(Vector3.forward * movingSpeed * Time.deltaTime);
+        }
+    }
+
+    private void AlignPlayer()
+    {
+        if (Mathf.Abs(transform.eulerAngles.y % 180) < 1)
+        {
+            transform.position = new Vector3(transform.position.x, transform.position.y, Mathf.Round(transform.position.z));
+        }
+        else
+        {
+            transform.position = new Vector3(Mathf.Round(transform.position.x), transform.position.y, transform.position.z);
         }
     }
 
@@ -74,13 +87,16 @@ public class PlayerController : MonoBehaviour
         if (other.gameObject.CompareTag("Wall"))
         {
             playerMovementState = MovementState.Stop;
-            if (Mathf.Abs(transform.eulerAngles.y % 180) < 1)
-            {
-                transform.position = new Vector3(transform.position.x, transform.position.y, Mathf.Round(transform.position.z));
-            } else
-            {
-                transform.position = new Vector3(Mathf.Round(transform.position.x), transform.position.y, transform.position.z);
-            }
+            AlignPlayer();
+        }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.CompareTag("Turning Wall") && nextTurn != null)
+        {
+            AlignPlayer();
+            StartTurning(90, (MovementState)nextTurn);
         }
     }
 }
