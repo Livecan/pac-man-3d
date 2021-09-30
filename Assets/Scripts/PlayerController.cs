@@ -37,6 +37,10 @@ public class PlayerController : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        if (other.gameObject.CompareTag("Food"))
+        {
+            Destroy(other.gameObject);
+        }
         if (other.gameObject.CompareTag("Enemy"))
         {
             Debug.Log("Game Over");
