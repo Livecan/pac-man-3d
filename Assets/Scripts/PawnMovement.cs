@@ -17,15 +17,8 @@ public class PawnMovement : MonoBehaviour
     public float movingSpeed = 3.5f;
     private float tileSize = 1;
 
-
-    // Start is called before the first frame update
-    void Start()
-    {
-
-    }
-
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         if ((pawnMovementState == MovementState.Forward || pawnMovementState == MovementState.Stop) && nextTurn == MovementState.Back)
         {

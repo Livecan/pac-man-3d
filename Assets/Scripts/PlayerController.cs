@@ -5,17 +5,24 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     private PawnMovement movement;
+    private AudioSource audioSource;
+    [SerializeField] AudioClip eatFoodAudio, walkAudio, dieAudio;
 
     // Start is called before the first frame update
     void Start()
     {
         movement = GetComponent<PawnMovement>();
+        audioSource = GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         HandleUserInput();
+        if (movement.PawnMovementState == PawnMovement.MovementState.Forward)
+        {
+            //audioSource.PlayOneShot(walkAudio);
+        }
     }
 
     // Registers user input - at the next turning point (when colliding with Wall/Turning Wall) this turning would be initiated.
@@ -39,10 +46,12 @@ public class PlayerController : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Food"))
         {
+            audioSource.PlayOneShot(eatFoodAudio);
             Destroy(other.gameObject);
         }
         if (other.gameObject.CompareTag("Enemy"))
         {
+            audioSource.PlayOneShot(dieAudio);
             Debug.Log("Game Over");
 
         }
