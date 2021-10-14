@@ -1,24 +1,24 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class PlayerController : MonoBehaviour
 {
     private PawnMovement movement;
     private AudioSource audioSource;
     [SerializeField] AudioClip eatFoodAudio, walkAudio, dieAudio;
-    private int totalFoodCount;
+    public UnityEvent onFoodEaten;
 
     // Start is called before the first frame update
     void Start()
     {
         movement = GetComponent<PawnMovement>();
         audioSource = GetComponent<AudioSource>();
-        totalFoodCount = GameObject.FindGameObjectsWithTag("Food").Length;
     }
 
     // Update is called once per frame
-    void FixedUpdate()
+    void Update()
     {
         HandleUserInput();
         if (movement.PawnMovementState == PawnMovement.MovementState.Forward)
@@ -50,7 +50,7 @@ public class PlayerController : MonoBehaviour
         {
             audioSource.PlayOneShot(eatFoodAudio);
             Destroy(other.gameObject);
-            Debug.Log(CountRemainingFood() + "/" + totalFoodCount);
+            onFoodEaten.Invoke();
         }
         if (other.gameObject.CompareTag("Enemy"))
         {
