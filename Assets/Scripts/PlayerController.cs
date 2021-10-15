@@ -9,12 +9,14 @@ public class PlayerController : MonoBehaviour
     private AudioSource audioSource;
     [SerializeField] AudioClip eatFoodAudio, walkAudio, dieAudio;
     public UnityEvent onFoodEaten;
+    private GameManager gameManager;
 
     // Start is called before the first frame update
     void Start()
     {
         movement = GetComponent<PawnMovement>();
         audioSource = GetComponent<AudioSource>();
+        gameManager = GameManager.Instance;
     }
 
     // Update is called once per frame
@@ -55,6 +57,7 @@ public class PlayerController : MonoBehaviour
         if (other.gameObject.CompareTag("Enemy"))
         {
             audioSource.PlayOneShot(dieAudio);
+            gameManager.GameOver();
             Debug.Log("Game Over");
 
         }

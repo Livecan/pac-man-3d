@@ -4,13 +4,18 @@ using System.Linq;
 using UnityEngine;
 using TMPro;
 using UnityEngine.SceneManagement;
+using UnityEngine.Events;
 
 public class GameManager : MonoBehaviour
 {
     public int totalFood;
+    public UnityEvent onGameOver;
+
     private static GameManager instance;
 
     public bool gameStarted = false;
+
+    public Camera camera3;
 
     public static GameManager Instance { get => instance; }
 
@@ -24,7 +29,7 @@ public class GameManager : MonoBehaviour
         } else
         {
             instance.gameStarted = true;
-            instance.GetComponentInChildren<Camera>().gameObject.SetActive(false);
+            instance.camera3.gameObject.SetActive(false);
             Destroy(this.gameObject);
         }
     }
@@ -43,5 +48,12 @@ public class GameManager : MonoBehaviour
     public int CountAllFood()
     {
         return GameObject.FindGameObjectsWithTag("Food").Length;
+    }
+
+    public void GameOver()
+    {
+        camera3.gameObject.SetActive(true);
+        GameObject.Find("Player").SetActive(false);
+        onGameOver.Invoke();
     }
 }

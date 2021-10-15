@@ -8,12 +8,14 @@ public class UIHandler : MonoBehaviour
     public TextMeshProUGUI foodText;
     public GameObject startButton;
     public GameObject gameBar;
+    public GameObject gameOverWindow;
     private GameManager gameManager;
 
     // Start is called before the first frame update
     void Start()
     {
         gameManager = GameManager.Instance;
+        gameManager.onGameOver.AddListener(DisplayGameOver);
         if (gameManager.gameStarted)
         {
             UpdateFoodCount();
@@ -28,11 +30,16 @@ public class UIHandler : MonoBehaviour
     public void UpdateFoodCount()
     {
         Invoke(nameof(UpdateFoodCountDelayed), 0);
-        //foodText.text = "Food to eat still: " + CountAllFood() + "/" + totalFood;
     }
 
     private void UpdateFoodCountDelayed()
     {
         foodText.text = "Score: " + (gameManager.totalFood - gameManager.CountAllFood()) + "/" + gameManager.totalFood;
+    }
+
+    private void DisplayGameOver()
+    {
+        gameOverWindow.SetActive(true);
+
     }
 }
