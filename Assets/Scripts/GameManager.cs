@@ -9,7 +9,8 @@ using UnityEngine.Events;
 public class GameManager : MonoBehaviour
 {
     public int totalFood;
-    public UnityEvent onGameOver;
+    public UnityEvent onGameLost;
+    public UnityEvent onGameWon;
 
     private static GameManager instance;
 
@@ -50,10 +51,21 @@ public class GameManager : MonoBehaviour
         return GameObject.FindGameObjectsWithTag("Food").Length;
     }
 
-    public void GameOver()
+    private void GameOver()
     {
         camera3.gameObject.SetActive(true);
         GameObject.Find("Player").SetActive(false);
-        onGameOver.Invoke();
+    }
+
+    public void LoseGame()
+    {
+        GameOver();
+        onGameLost.Invoke();
+    }
+
+    public void WinGame()
+    {
+        GameOver();
+        onGameWon.Invoke();
     }
 }

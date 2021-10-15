@@ -51,13 +51,19 @@ public class PlayerController : MonoBehaviour
         if (other.gameObject.CompareTag("Food"))
         {
             audioSource.PlayOneShot(eatFoodAudio);
+
+            if (gameManager.CountAllFood() == 1)
+            {
+                gameManager.WinGame();
+            }
+
             Destroy(other.gameObject);
             onFoodEaten.Invoke();
         }
         if (other.gameObject.CompareTag("Enemy"))
         {
             audioSource.PlayOneShot(dieAudio);
-            gameManager.GameOver();
+            gameManager.LoseGame();
             Debug.Log("Game Over");
 
         }

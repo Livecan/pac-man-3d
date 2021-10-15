@@ -1,25 +1,31 @@
-﻿using System.Collections;
+﻿using System.Linq;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.UI;
 
 public class UIHandler : MonoBehaviour
 {
     public TextMeshProUGUI foodText;
-    public GameObject startButton;
+    public GameObject introPanel;
     public GameObject gameBar;
     public GameObject gameOverWindow;
+    public GameObject victoryWindow;
+    public List<Button> restartButtons;
     private GameManager gameManager;
 
     // Start is called before the first frame update
     void Start()
     {
         gameManager = GameManager.Instance;
-        gameManager.onGameOver.AddListener(DisplayGameOver);
+        gameManager.onGameLost.AddListener(DisplayGameLost);
+        gameManager.onGameWon.AddListener(DisplayGameWon);
+        restartButtons.ForEach(button => button.onClick.AddListener(gameManager.StartNew));
         if (gameManager.gameStarted)
         {
             UpdateFoodCount();
-            startButton.SetActive(false);
+            introPanel.SetActive(false);
         }
         else
         {
@@ -37,9 +43,13 @@ public class UIHandler : MonoBehaviour
         foodText.text = "Score: " + (gameManager.totalFood - gameManager.CountAllFood()) + "/" + gameManager.totalFood;
     }
 
-    private void DisplayGameOver()
+    private void DisplayGameLost()
     {
         gameOverWindow.SetActive(true);
+    }
 
+    private void DisplayGameWon()
+    {
+        victoryWindow.SetActive(true);
     }
 }
